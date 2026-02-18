@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
@@ -34,7 +36,8 @@ public abstract class ChanceLogic {
     public static final ChanceLogic OR = new ChanceLogic("or") {
 
         @Override
-        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+        public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                                         @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                                          @NotNull ChanceBoostFunction boostFunction,
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
@@ -48,7 +51,7 @@ public abstract class ChanceLogic {
                 int newChance = getChance(entry, boostFunction, recipeTier, chanceTier);
                 int totalChance = times * newChance;
                 int guaranteed = totalChance / maxChance;
-                if (guaranteed > 0) builder.addAll(Collections.nCopies(guaranteed, entry));
+                if (guaranteed > 0) builder.add(entry.copyChanced(cap, ContentModifier.multiplier(guaranteed)));
                 newChance = totalChance % maxChance;
 
                 int cached = getCachedChance(entry, cache);
@@ -80,7 +83,8 @@ public abstract class ChanceLogic {
     public static final ChanceLogic AND = new ChanceLogic("and") {
 
         @Override
-        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+        public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                                         @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                                          @NotNull ChanceBoostFunction boostFunction,
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
@@ -118,7 +122,8 @@ public abstract class ChanceLogic {
     public static final ChanceLogic XOR = new ChanceLogic("xor") {
 
         @Override
-        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+        public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                                         @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                                          @NotNull ChanceBoostFunction boostFunction,
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
@@ -158,7 +163,8 @@ public abstract class ChanceLogic {
     public static final ChanceLogic NONE = new ChanceLogic("none") {
 
         @Override
-        public @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+        public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                                         @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                                          @NotNull ChanceBoostFunction boostFunction,
                                                          int recipeTier, int chanceTier,
                                                          @Nullable Object2IntMap<?> cache, int times) {
@@ -242,7 +248,8 @@ public abstract class ChanceLogic {
      * @param times          the number of times to roll
      * @return a list of the produced outputs, empty if roll fails
      */
-    public abstract @Unmodifiable List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+    public abstract @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                                              @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                                               @NotNull ChanceBoostFunction boostFunction,
                                                               int recipeTier,
                                                               int chanceTier, @Nullable Object2IntMap<?> cache,
@@ -259,10 +266,11 @@ public abstract class ChanceLogic {
      * @return a list of the produced outputs
      */
     @Unmodifiable
-    public List<@NotNull Content> roll(@NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
+    public List<@NotNull Content> roll(RecipeCapability<?> cap,
+                                       @NotNull @Unmodifiable List<@NotNull Content> chancedEntries,
                                        @NotNull ChanceBoostFunction boostFunction, int recipeTier, int chanceTier,
                                        int times) {
-        return roll(chancedEntries, boostFunction, recipeTier, chanceTier, null, times);
+        return roll(cap, chancedEntries, boostFunction, recipeTier, chanceTier, null, times);
     }
 
     @NotNull

@@ -75,6 +75,15 @@ public class Content {
         }
     }
 
+    public Content copyChanced(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
+        if (modifier == ContentModifier.IDENTITY) {
+            return copy(capability);
+        } else {
+            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost,
+                    slotName, uiName);
+        }
+    }
+
     /**
      * Attempts to fix and round the given chance boost due to potential differences
      * between the max chance and {@link ChanceLogic#getMaxChancedValue()}.

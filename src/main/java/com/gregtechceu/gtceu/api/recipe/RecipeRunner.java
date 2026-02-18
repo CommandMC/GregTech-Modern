@@ -113,7 +113,7 @@ class RecipeRunner {
             int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
             int chanceTier = recipeTier + recipe.ocLevel;
             var cache = this.chanceCaches.get(cap);
-            chancedContents = logic.roll(chancedContents, function, recipeTier, chanceTier, cache, recipe.parallels);
+            chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache, recipe.parallels);
 
             for (Content cont : chancedContents) {
                 if (cont.slotName == null) {

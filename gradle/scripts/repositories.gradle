@@ -22,6 +22,11 @@ repositories {
         url = "https://maven.firstdarkdev.xyz/snapshots"
     }
 
+    maven { // KubeJS, Rhino
+        name = "latvian"
+        url = "https://maven.latvian.dev/releases"
+    }
+
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }
         filter { includeGroup("dev.ftb.mods") }
